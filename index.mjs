@@ -19,6 +19,8 @@ export const plugin_names = [
     "lzf",
     "zfp",
     "zstd",
+    "bitgroom",
+    "bitround",
 ]
 
 export async function install_plugins(h5wasm_module, names=plugin_names, new_plugin_path=null) {
