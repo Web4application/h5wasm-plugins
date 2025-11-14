@@ -30,5 +30,8 @@
     "h5wasm": {
       "optional": true
     }
+  },
+  "devDependencies": {
+    "h5wasm": "^0.8.8"
   }
 }
