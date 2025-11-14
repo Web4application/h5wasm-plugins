@@ -5,7 +5,10 @@ const { default: default_cd_values } = await import("./default_cd_values.json", 
 // add lzf, copy bzip2 to bz2:
 if (!('lzf' in default_cd_values))
     default_cd_values['lzf'] = { compression: 32000, compression_opts: [] };
-    default_cd_values['bz2'] = default_cd_values['bzip2'];
+
+default_cd_values['bz2'] = default_cd_values['bzip2'];
+default_cd_values['bitround'] = { compression: 32023, compression_opts: [3,0,0,0,0] }; // bitround with default options
+default_cd_values['bitgroom'] = { compression: 32022, compression_opts: [3,4,0,0,0] }; // bitgroom with default options
 
 const h5wasm_module = await h5wasm.ready;
 h5wasm_module.activate_throwing_error_handler();
@@ -38,7 +41,7 @@ const exclude_filters = [
 ];
 
 const results = Object.fromEntries(filters_to_test.map(f => [f, { 'valid': false, 'read_error': null, 'write_error': null, 'skipped': false }])); 
-const DATA_REPEAT = 2**14;
+const DATA_REPEAT = 2**6;
 const NX = 1024;
 const NY = 512;
 const SIZE = NX * NY;
@@ -50,6 +53,16 @@ const testFilesDir = path.join(path.dirname(new URL(import.meta.url).pathname), 
 
 function validate_data(data) {
     return data.every((v, i) => (Math.abs(v - i % DATA_REPEAT) < tolerance));
+}
+
+function validate_bitgroom_data(data) {
+    const sig_digits = default_cd_values['bitgroom'].compression_opts[0];
+    return data.every((v, i) => {
+        const original = i % DATA_REPEAT;
+        // for bitgroom with 3 bits, the maximum error is 7
+        return original.toPrecision(sig_digits) == v.toPrecision(sig_digits);
+    }
+    );
 }
 
 function write_test_file(filter_name) {
@@ -113,7 +126,16 @@ for (const filter_name of filters_to_test) {
         const f = new h5wasm.File(path.join(testFilesDir, `test_${filter_name}.h5`), 'r');
         const dset = f.get('data');
         const data = dset.value;
-        const valid = filter_name === 'jpeg' ? validate_jpeg_data(data) : validate_data(data);
+        let valid;
+        if (filter_name === 'bitgroom') {
+            valid = validate_bitgroom_data(data);
+        }
+        else if (filter_name === 'jpeg') {
+            valid = validate_jpeg_data(data);
+        }
+        else {
+            valid = validate_data(data);
+        }
         console.log(`${filter_name}: ${valid ? 'valid' : 'invalid'}`, dset.filters);
         if (!valid) {
             console.log(`data validation failed for filter: ${filter_name}`);
