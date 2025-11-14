@@ -8,6 +8,8 @@
 [![zfp](https://github.com/h5wasm/h5wasm-plugins/actions/workflows/test-zfp.yml/badge.svg)](https://github.com/h5wasm/h5wasm-plugins/actions/workflows/test-zfp.yml)
 [![zstd](https://github.com/h5wasm/h5wasm-plugins/actions/workflows/test-zstd.yml/badge.svg)](https://github.com/h5wasm/h5wasm-plugins/actions/workflows/test-zstd.yml)
 [![jpeg](https://github.com/h5wasm/h5wasm-plugins/actions/workflows/test-jpeg.yml/badge.svg)](https://github.com/h5wasm/h5wasm-plugins/actions/workflows/test-jpeg.yml)
+[![bitround](https://github.com/h5wasm/h5wasm-plugins/actions/workflows/test-bitround.yml/badge.svg)](https://github.com/h5wasm/h5wasm-plugins/actions/workflows/test-bitround.yml)
+[![bitgroom](https://github.com/h5wasm/h5wasm-plugins/actions/workflows/test-bitgroom.yml/badge.svg)](https://github.com/h5wasm/h5wasm-plugins/actions/workflows/test-bitgroom.yml)
 
 
 # h5wasm-plugins
@@ -36,6 +38,8 @@ _(h5wasm is a javascript/webassembly library for reading and writing HDF5 files 
  - lzf
  - zfp
  - zstd
+ - bitround
+ - bitgroom
 
 (Note that `gzip` and `szip` filters are built-in to h5wasm and don't require a plugin)
 
