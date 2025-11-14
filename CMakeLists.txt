@@ -74,13 +74,22 @@ if(NOT h5pl_POPULATED)
     h5pl
   )
 endif()
-# include(${h5pl_SOURCE_DIR}/config/cmake/cacheinit.cmake)
 
-set(ZLIB_DIR ${libhdf5-wasm_SOURCE_DIR})
-set(ZLIB_ROOT ${libhdf5-wasm_SOURCE_DIR})
-set (ZLIB_INCLUDE_DIR ${ZLIB_DIR}/include CACHE STRING "" FORCE)
-set (ZLIB_LIBRARY ${ZLIB_DIR}/lib/libz.a CACHE STRING "" FORCE)
-message(STATUS "ZLIB_DIR: ${ZLIB_DIR}")
+FetchContent_Declare(
+  zlib
+  GIT_REPOSITORY https://github.com/madler/zlib
+  GIT_TAG v1.3.1
+)
+if(NOT zlib_POPULATED)
+  FetchContent_MakeAvailable(zlib)
+endif()
+
+set (ZLIB_DIR ${zlib_SOURCE_DIR})
+set (ZLIB_INCLUDE_DIR ${zlib_SOURCE_DIR} CACHE STRING "" FORCE)
+set (ZLIB_LIBRARY ${zlib_BINARY_DIR}/libz.a CACHE STRING "" FORCE)
+# Add zlib include directories globally so blosc and other deps can find both zlib.h and zconf.h
+include_directories(${zlib_SOURCE_DIR} ${zlib_BINARY_DIR})
+find_package(ZLIB REQUIRED)
 
 # the SZF library uses pkg_search_module to find zstd... with older pkg-config
 # it seems to need help finding it:
