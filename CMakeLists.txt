@@ -16,13 +16,13 @@ message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 list(APPEND CMAKE_MODULE_PATH "${base_path}/dist")
 message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 
-set (BASE_URL "https://github.com/usnistgov/libhdf5-wasm/releases/download/v0.4.6_3.1.68" CACHE STRING "")
+set (BASE_URL "https://github.com/usnistgov/libhdf5-wasm/releases/download/v0.5.0_3.1.68" CACHE STRING "")
 # set (BASE_URL "$ENV{HOME}/dev/libhdf5-wasm" CACHE STRING "")
 
 FetchContent_Declare(
   libhdf5-wasm
   URL ${BASE_URL}/HDF5-1.14.6-Emscripten.tar.gz
-  URL_HASH SHA256=0c5de36a3c81e3854e57593c55274d89a43db3f8a7bbe6a0d9d5c560e9c222b1
+  URL_HASH SHA256=90c26256f3d1fd0b421b7e0defebe1894f179b2a50252aeb059aaa1fa6bdb7e9
 )
 if (NOT libhdf5-wasm_POPULATED)
   FetchContent_MakeAvailable(libhdf5-wasm)
@@ -30,6 +30,16 @@ endif()
 
 set(HDF5_DIR ${libhdf5-wasm_SOURCE_DIR}/cmake)
 find_package(HDF5 REQUIRED CONFIG)
+
+# Create alias for hdf5::hdf5-static if it doesn't exist
+if(NOT TARGET hdf5::hdf5-static)
+  if(TARGET hdf5-static)
+    add_library(hdf5::hdf5-static ALIAS hdf5-static)
+    message(STATUS "Created alias hdf5::hdf5-static -> hdf5-static")
+  else()
+    message(WARNING "Neither hdf5::hdf5-static nor hdf5-static target found")
+  endif()
+endif()
 
 FetchContent_Declare(
   zstd
