@@ -3,7 +3,7 @@
 name: bshuf
 on:
   workflow_run:
-    workflows: ["build"]
+    workflows: ["build test and publish"]
     types:
       - completed
 
